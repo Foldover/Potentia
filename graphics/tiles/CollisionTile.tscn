@@ -1,0 +1,24 @@
+[gd_scene format=1]
+
+[node name="CollisionTile" type="Sprite"]
+
+transform/pos = Vector2( 32, 32 )
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+input/pickable = false
+collision/layers = 1
+collision/mask = 1
+constant_linear_velocity = Vector2( 0, 0 )
+constant_angular_velocity = 0.0
+friction = 1.0
+bounce = 0.0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
+
+build_mode = 0
+polygon = Vector2Array(  )
+shape_range = Vector2( -1, -1 )
+trigger = false
+
+

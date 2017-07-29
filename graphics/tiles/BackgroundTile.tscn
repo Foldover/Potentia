@@ -1,0 +1,8 @@
+[gd_scene format=1]
+
+[node name="BackgroundTile" type="Sprite"]
+
+transform/pos = Vector2( 32, 32 )
+region_rect = Rect2( 0, 0, 64, 64 )
+
+
