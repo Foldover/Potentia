@@ -4,8 +4,8 @@ var mVelocity
 var mAnimals
 var mParticles
 
-func set_velocity(x):
-	mVelocity.x = x
+func set_velocity(pos):
+	set_global_pos(Vector2(x - 40, get_global_pos().y))
 
 func _fixed_process(delta):
 	if (!is_colliding()):

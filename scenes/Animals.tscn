@@ -19,8 +19,12 @@ collision/mask = 1
 collision/margin = 0.08
 script/script = ExtResource( 1 )
 mAcceleration = 80.0
-mShockCooldown = 1.0
+mShockCooldown = 0.05
 mPowerDepletion = 10
+mShockCooldownMultiplier = 2.0
+mBaseAggressionIncrement = 1.0
+mAggressionCooldownMultiplier = 0.5
+mAggressionCooldown = 1.0
 
 [node name="Sprite" type="Sprite" parent="."]
 
@@ -53,12 +57,21 @@ limit/bottom = 10000000
 drag_margin/h_enabled = true
 drag_margin/v_enabled = true
 smoothing/enable = true
-smoothing/speed = 2.0
+smoothing/speed = 8.0
 drag_margin/left = 0.2
 drag_margin/top = 0.2
 drag_margin/right = 0.2
 drag_margin/bottom = 0.2
 
+[node name="AggressionTimer" type="Timer" parent="."]
+
+process_mode = 0
+wait_time = 1.0
+one_shot = false
+autostart = true
+
 [connection signal="timeout" from="ShockTimer" to="." method="_on_ShockTimer_timeout"]
+
+[connection signal="timeout" from="AggressionTimer" to="." method="_on_AggressionTimer_timeout"]
 
 

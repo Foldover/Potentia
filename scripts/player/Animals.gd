@@ -4,6 +4,10 @@ var mVelocity
 export var mAcceleration = 1.0
 export var mShockCooldown = 1.0
 export var mPowerDepletion = 10
+export var mShockCooldownMultiplier = 1.2
+export var mBaseAggressionIncrement = 1.0
+export var mAggressionCooldownMultiplier = 0.5
+export var mAggressionCooldown = 1.0
 
 var canShock
 var mSleigh
@@ -19,20 +23,10 @@ func _fixed_process(delta):
 	else:
 		mVelocity.y = 0
 	
-	if (Input.is_action_pressed("Shock") and canShock):
-		canShock = false
-		get_node("ShockTimer").start()
-		mVelocity.x += mAcceleration
-		mPower -= mPowerDepletion
-		mAggression = 0
-		mPowerBar.set_value(mPower)
-		mAggressionBar.set_value(mAggression)
-	
-	
 	var motion = mVelocity * delta
 	var mx = motion.x
 	motion = move(motion)
-	mSleigh.set_velocity(mVelocity.x)
+	mSleigh.set_velocity(get_global_pos().x)
 	if (is_colliding()):
 		var n = get_collision_normal()
 		if (n.y != -1):
@@ -41,6 +35,20 @@ func _fixed_process(delta):
 		
 		move(Vector2(0, motion.y))
 	
+func _input(event):
+	if event.is_action_pressed("Shock") and canShock:
+		canShock = false
+		get_node("ShockTimer").start()
+		mVelocity.x += mAcceleration
+		mPower -= mPowerDepletion
+		mAggression = 0
+		mPowerBar.set_value(mPower)
+		mAggressionBar.set_value(mAggression)
+		mShockCooldown *= mShockCooldownMultiplier
+		get_node("ShockTimer").set_wait_time(mShockCooldown)
+		mAggressionCooldown *= mAggressionCooldownMultiplier
+		get_node("AggressionTimer").set_wait_time(mAggressionCooldown)
+
 func _ready():
 	mPower = 100
 	mAggression = 0
@@ -50,6 +58,11 @@ func _ready():
 	mVelocity = Vector2()
 	mSleigh = get_parent().get_node("Sledge")
 	set_fixed_process(true)
+	set_process_input(true)
 
 func _on_ShockTimer_timeout():
 	canShock = true
+
+func _on_AggressionTimer_timeout():
+	mAggression += 1
+	mAggressionBar.set_value(mAggression)
