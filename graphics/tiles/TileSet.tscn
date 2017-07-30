@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=1]
 
 [ext_resource path="res://graphics/tiles/CollisionTile.tscn" type="PackedScene" id=1]
-[ext_resource path="res://graphics/tiles/Tile-dummyramp.png" type="Texture" id=2]
+[ext_resource path="res://graphics/tiles/Tiles_hill_ChrisIsBad.png" type="Texture" id=2]
 [ext_resource path="res://graphics/tiles/Tileset.png" type="Texture" id=3]
 [ext_resource path="res://graphics/tiles/BackgroundTile.tscn" type="PackedScene" id=4]
 
@@ -11,10 +11,12 @@
 
 transform/pos = Vector2( 32, 96 )
 texture = ExtResource( 2 )
+region = true
+region_rect = Rect2( 0, 64, 64, 64 )
 
 [node name="CollisionPolygon2D" parent="RampTile/StaticBody2D"]
 
-polygon = Vector2Array( -32, 32, 32, -32, 32, 32 )
+polygon = Vector2Array( -32, 32, 32, -32, 32, -8, -8, 32 )
 shape_range = Vector2( 0, 0 )
 
 [node name="HLEdgeGroundTile" parent="." instance=ExtResource( 1 )]
@@ -25,20 +27,19 @@ region_rect = Rect2( 0, 0, 64, 64 )
 
 [node name="CollisionPolygon2D" parent="HLEdgeGroundTile/StaticBody2D"]
 
-polygon = Vector2Array( 32, -32, -32, -32, -32, 32, -16, 32, -16, -16, 32, -16 )
+polygon = Vector2Array( 32, -8, -16, -8, -16, 32, -32, 32, -32, -32, 32, -32 )
 shape_range = Vector2( 0, 1 )
 
 [node name="HSeamlessGroundTile" parent="." instance=ExtResource( 1 )]
 
-editor/display_folded = true
 transform/pos = Vector2( 96, 32 )
 texture = ExtResource( 3 )
 region = true
-region_rect = Rect2( 64, 0, 64, 64 )
+region_rect = Rect2( 128, 0, 64, 64 )
 
 [node name="CollisionPolygon2D" parent="HSeamlessGroundTile/StaticBody2D"]
 
-polygon = Vector2Array( -32, -32, 32, -32, 32, -16, -32, -16 )
+polygon = Vector2Array( -32, -32, 32, -32, 32, -8, -32, -8 )
 shape_range = Vector2( 0, 0 )
 
 [node name="HREdgeGroundTile" parent="." instance=ExtResource( 1 )]
@@ -50,7 +51,7 @@ region_rect = Rect2( 960, 0, 64, 64 )
 
 [node name="CollisionPolygon2D" parent="HREdgeGroundTile/StaticBody2D"]
 
-polygon = Vector2Array( -32, -32, 32, -32, 32, 32, 16, 32, 16, -16, -32, -16 )
+polygon = Vector2Array( -32, -32, 32, -32, 32, 32, 16, 32, 16, -8, -32, -8 )
 shape_range = Vector2( 0, 1 )
 
 [node name="BackgroundTile" parent="." instance=ExtResource( 4 )]
@@ -69,12 +70,11 @@ region_rect = Rect2( 960, 64, 64, 64 )
 
 [node name="CollisionPolygon2D" parent="RightEdgeTile/StaticBody2D"]
 
-polygon = Vector2Array( -32, -32, 32, -32, 32, 32, -32, 32 )
+polygon = Vector2Array( 24, -32, 24, 32, 32, 32, 32, -32 )
 shape_range = Vector2( 0, 0 )
 
 [node name="LeftEdgeTile" parent="." instance=ExtResource( 1 )]
 
-editor/display_folded = true
 transform/pos = Vector2( 352, 32 )
 texture = ExtResource( 3 )
 region = true
@@ -82,7 +82,43 @@ region_rect = Rect2( 0, 64, 64, 64 )
 
 [node name="CollisionPolygon2D" parent="LeftEdgeTile/StaticBody2D"]
 
-polygon = Vector2Array( -32, -32, 32, -32, 32, 32, -32, 32 )
+polygon = Vector2Array( -24, -32, -24, 32, -32, 32, -32, -32 )
+shape_range = Vector2( 0, 0 )
+
+[node name="RampPieceTile" parent="." instance=ExtResource( 1 )]
+
+transform/pos = Vector2( 96, 96 )
+texture = ExtResource( 2 )
+region = true
+region_rect = Rect2( 64, 64, 64, 64 )
+
+[node name="CollisionPolygon2D" parent="RampPieceTile/StaticBody2D"]
+
+polygon = Vector2Array( -32, -32, -8, -32, -32, -8 )
+shape_range = Vector2( 0, 0 )
+
+[node name="RampDownTile" parent="." instance=ExtResource( 1 )]
+
+transform/pos = Vector2( 160, 96 )
+texture = ExtResource( 2 )
+region = true
+region_rect = Rect2( 256, 0, 64, 64 )
+
+[node name="CollisionPolygon2D" parent="RampDownTile/StaticBody2D"]
+
+polygon = Vector2Array( -32, -32, 32, 32, 8, 32, -32, -8 )
+shape_range = Vector2( 0, 0 )
+
+[node name="RampDownPieceTile" parent="." instance=ExtResource( 1 )]
+
+transform/pos = Vector2( 224, 96 )
+texture = ExtResource( 2 )
+region = true
+region_rect = Rect2( 256, 64, 64, 64 )
+
+[node name="CollisionPolygon2D" parent="RampDownPieceTile/StaticBody2D"]
+
+polygon = Vector2Array( 8, -32, 32, -8, 32, -32 )
 shape_range = Vector2( 0, 0 )
 
 
@@ -92,3 +128,6 @@ shape_range = Vector2( 0, 0 )
 [editable path="HREdgeGroundTile"]
 [editable path="RightEdgeTile"]
 [editable path="LeftEdgeTile"]
+[editable path="RampPieceTile"]
+[editable path="RampDownTile"]
+[editable path="RampDownPieceTile"]

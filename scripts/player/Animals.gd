@@ -1,17 +1,16 @@
 extends KinematicBody2D
 
-var mVelocity
 export var mAcceleration = 1.0
 export var mDeceleration = 1.0
 export var mShockCooldown = 1.0
-export var mPowerDepletion = 10
-export var mShockCooldownMultiplier = 1.2
-export var mBaseAggressionIncrement = 1.0
-export var mAggressionCooldownMultiplier = 0.5
-export var mAggressionCooldown = 1.0
+export var mAggressionIncrement = 1.0
+export var mAggressionDecrement = -1.0
+export var mPowerIncrement = 1.0
+export var mPowerDecrement = -1.0
+export var mFriction = 1.0
 
+var mVelocity
 var canShock
-var mSleigh
 var mPower
 var mAggression
 
@@ -19,20 +18,14 @@ var mPowerBar
 var mAggressionBar
 
 var mParticles
-var mSnowPartArea
 
 var loseHasPopped = false
 
 func _process(delta):
-	mShockCooldown -= 0.0001
-	mAggressionCooldown += 0.0001
 	get_node("ShockTimer").set_wait_time(mShockCooldown)
 	if(mAggression >= 100 and !loseHasPopped):
-		get_tree().set_pause(true)
-		loseHasPopped = true
-		get_node("UISounds").play("A Finnish Man meets a Brown Bear (MUST SEE!!) render 001")
-		get_parent().get_node("Hud/PopupLose").popup()
-
+		lose()
+		
 func _fixed_process(delta):
 	if (!is_colliding()):
 		mVelocity.y += globals.GRAVITY
@@ -42,11 +35,15 @@ func _fixed_process(delta):
 			mParticles.set_emitting(true)
 		mVelocity.y = 0
 	
+	mVelocity.x *= mFriction
 	var motion = mVelocity * delta
 	var mx = motion.x
 	motion = move(motion)
 	if (is_colliding()):
+		get_collider_metadata()
 		var n = get_collision_normal()
+		if n.x == -1:
+			mVelocity.x = 0
 		if (n.y != -1):
 			motion.y = n.slide(motion).y
 			mVelocity.y = n.slide(mVelocity).y
@@ -56,18 +53,8 @@ func _fixed_process(delta):
 func _input(event):
 	if event.is_action_pressed("Shock") and canShock:
 		get_node("SamplePlayer2D").play("Bleetz")
-		canShock = false
-		get_node("ShockTimer").start()
-		mVelocity.x += mAcceleration
-		mPower -= mPowerDepletion
-		mAggression = 0
-		mPowerBar.set_value(mPower)
-		mAggressionBar.set_value(mAggression)
-		mShockCooldown *= mShockCooldownMultiplier
-		get_node("ShockTimer").set_wait_time(mShockCooldown)
-		mAggressionCooldown *= mAggressionCooldownMultiplier
-		get_node("AggressionTimer").set_wait_time(mAggressionCooldown)
-	elif event.is_action_pressed("Brake"):
+		zapp()
+	elif event.is_action("Brake"):
 		mVelocity.x -= mDeceleration
 		if mVelocity.x < 0:
 			mVelocity.x = 0
@@ -77,21 +64,50 @@ func _ready():
 	mAggression = 0
 	mPowerBar = get_parent().get_node("Hud/HBoxContainer/Bars/Power")
 	mAggressionBar = get_parent().get_node("Hud/HBoxContainer/Bars/Aggression")
+	mPowerBar.set_value(1)
 	canShock = true
 	mVelocity = Vector2()
-	mSleigh = get_parent().get_node("Sledge")
 	mParticles = get_node("SnowParticles")
-	mSnowPartArea = get_node("SnowPartArea")
 	set_fixed_process(true)
 	set_process(true)
 	set_process_input(true)
+
+func lose():
+	get_tree().set_pause(true)
+	loseHasPopped = true
+	get_node("UISounds").play("A Finnish Man meets a Brown Bear (MUST SEE!!) render 001")
+	get_parent().get_node("Hud/PopupLose").popup()
+
+func zapp():
+	canShock = false
+	get_node("ShockTimer").start()
+	mVelocity.x += mAcceleration
+	updatePower(mPowerDecrement)
+	updateAggression(mAggressionIncrement)
+
+func updateAggression(amount):
+	mAggression += amount
+	if mAggression < 0:
+		mAggression = 0
+	mAggressionBar.set_value(mAggression)
+
+func updatePower(amount):
+	mPower += amount
+	if mPower > 100:
+		mPower = 100
+	elif mPower < 0:
+		mPower = 0
+	mPowerBar.set_value(mPower)
 
 func _on_ShockTimer_timeout():
 	canShock = true
 
 func _on_AggressionTimer_timeout():
-	mAggression += 1
-	mAggressionBar.set_value(mAggression)
+	updateAggression(mAggressionDecrement)
 
 func _on_PopupLose_confirmed():
-	get_tree().reload_current_scene
+	print("reloading scene")
+	globals.setScene("res://scenes/Main.tscn")
+
+func _on_PowerTimer_timeout():
+	updatePower(mPowerIncrement)

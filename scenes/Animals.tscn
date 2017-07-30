@@ -12,7 +12,7 @@ points = Vector2Array( 8.53326, 15.5216, -8.90076, 15.5216, -9.09448, -15.666, 8
 [sub_resource type="SampleLibrary" id=2]
 
 samples/Bleetz = {
-"db": -3.0,
+"db": -5.49,
 "pitch": 1.0,
 "priority": 0,
 "sample": ExtResource( 3 )
@@ -31,11 +31,11 @@ script/script = ExtResource( 1 )
 mAcceleration = 80.0
 mDeceleration = 80.0
 mShockCooldown = 0.05
-mPowerDepletion = 10
-mShockCooldownMultiplier = 2.0
-mBaseAggressionIncrement = 1.0
-mAggressionCooldownMultiplier = 0.5
-mAggressionCooldown = 1.0
+mAggressionIncrement = 1.0
+mAggressionDecrement = -1.0
+mPowerIncrement = 1.0
+mPowerDecrement = 10.0
+mFriction = 1.0
 
 [node name="Sprite" type="Sprite" parent="."]
 
@@ -51,7 +51,7 @@ trigger = false
 [node name="ShockTimer" type="Timer" parent="."]
 
 process_mode = 1
-wait_time = 0.05
+wait_time = 0.5
 one_shot = true
 autostart = false
 
@@ -77,7 +77,7 @@ drag_margin/bottom = 0.2
 [node name="AggressionTimer" type="Timer" parent="."]
 
 process_mode = 0
-wait_time = 1.0
+wait_time = 0.25
 one_shot = false
 autostart = true
 
@@ -128,8 +128,17 @@ config/polyphony = 1
 config/samples = SubResource( 2 )
 config/pitch_random = 0.0
 
+[node name="PowerTimer" type="Timer" parent="."]
+
+process_mode = 1
+wait_time = 0.25
+one_shot = false
+autostart = true
+
 [connection signal="timeout" from="ShockTimer" to="." method="_on_ShockTimer_timeout"]
 
 [connection signal="timeout" from="AggressionTimer" to="." method="_on_AggressionTimer_timeout"]
+
+[connection signal="timeout" from="PowerTimer" to="." method="_on_PowerTimer_timeout"]
 
 
