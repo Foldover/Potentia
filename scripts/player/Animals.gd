@@ -2,6 +2,7 @@ extends KinematicBody2D
 
 var mVelocity
 export var mAcceleration = 1.0
+export var mDeceleration = 1.0
 export var mShockCooldown = 1.0
 export var mPowerDepletion = 10
 export var mShockCooldownMultiplier = 1.2
@@ -17,16 +18,21 @@ var mAggression
 var mPowerBar
 var mAggressionBar
 
+var mParticles
+var mSnowPartArea
+
 func _fixed_process(delta):
 	if (!is_colliding()):
 		mVelocity.y += globals.GRAVITY
+		mParticles.set_emitting(false)
 	else:
+		if mVelocity.x > 0:
+			mParticles.set_emitting(true)
 		mVelocity.y = 0
 	
 	var motion = mVelocity * delta
 	var mx = motion.x
 	motion = move(motion)
-	mSleigh.set_velocity(get_global_pos().x)
 	if (is_colliding()):
 		var n = get_collision_normal()
 		if (n.y != -1):
@@ -37,6 +43,7 @@ func _fixed_process(delta):
 	
 func _input(event):
 	if event.is_action_pressed("Shock") and canShock:
+		get_node("SamplePlayer2D").play("Bleetz")
 		canShock = false
 		get_node("ShockTimer").start()
 		mVelocity.x += mAcceleration
@@ -48,6 +55,10 @@ func _input(event):
 		get_node("ShockTimer").set_wait_time(mShockCooldown)
 		mAggressionCooldown *= mAggressionCooldownMultiplier
 		get_node("AggressionTimer").set_wait_time(mAggressionCooldown)
+	elif event.is_action_pressed("Brake"):
+		mVelocity.x -= mDeceleration
+		if mVelocity.x < 0:
+			mVelocity.x = 0
 
 func _ready():
 	mPower = 100
@@ -57,6 +68,8 @@ func _ready():
 	canShock = true
 	mVelocity = Vector2()
 	mSleigh = get_parent().get_node("Sledge")
+	mParticles = get_node("SnowParticles")
+	mSnowPartArea = get_node("SnowPartArea")
 	set_fixed_process(true)
 	set_process_input(true)
 
