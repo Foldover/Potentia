@@ -12,7 +12,7 @@ points = Vector2Array( 8.53326, 15.5216, -8.90076, 15.5216, -9.09448, -15.666, 8
 [sub_resource type="SampleLibrary" id=2]
 
 samples/Bleetz = {
-"db": 0.0,
+"db": -3.0,
 "pitch": 1.0,
 "priority": 0,
 "sample": ExtResource( 3 )
@@ -29,7 +29,7 @@ collision/mask = 1
 collision/margin = 0.08
 script/script = ExtResource( 1 )
 mAcceleration = 80.0
-mDeceleration = 10.0
+mDeceleration = 80.0
 mShockCooldown = 0.05
 mPowerDepletion = 10
 mShockCooldownMultiplier = 2.0

@@ -21,6 +21,18 @@ var mAggressionBar
 var mParticles
 var mSnowPartArea
 
+var loseHasPopped = false
+
+func _process(delta):
+	mShockCooldown -= 0.0001
+	mAggressionCooldown += 0.0001
+	get_node("ShockTimer").set_wait_time(mShockCooldown)
+	if(mAggression >= 100 and !loseHasPopped):
+		get_tree().set_pause(true)
+		loseHasPopped = true
+		get_node("UISounds").play("A Finnish Man meets a Brown Bear (MUST SEE!!) render 001")
+		get_parent().get_node("Hud/PopupLose").popup()
+
 func _fixed_process(delta):
 	if (!is_colliding()):
 		mVelocity.y += globals.GRAVITY
@@ -71,6 +83,7 @@ func _ready():
 	mParticles = get_node("SnowParticles")
 	mSnowPartArea = get_node("SnowPartArea")
 	set_fixed_process(true)
+	set_process(true)
 	set_process_input(true)
 
 func _on_ShockTimer_timeout():
@@ -79,3 +92,6 @@ func _on_ShockTimer_timeout():
 func _on_AggressionTimer_timeout():
 	mAggression += 1
 	mAggressionBar.set_value(mAggression)
+
+func _on_PopupLose_confirmed():
+	get_tree().reload_current_scene
