@@ -11,4 +11,5 @@ func _ready():
 
 func _on_WinBox_body_enter( body ):
 	get_parent().get_node("Hud/PopupWin").popup()
-	get_parent().get_node("Animals/UISounds").play("SoGood")
+	get_parent().get_node("Animals/UISounds").play("Win")
+	get_parent().get_node("LevelMusic").stop()

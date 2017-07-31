@@ -1,21 +1,78 @@
-[gd_scene load_steps=6 format=1]
+[gd_scene load_steps=13 format=1]
 
 [ext_resource path="res://scripts/player/Animals.gd" type="Script" id=1]
-[ext_resource path="res://graphics/player/Player-dummy.png" type="Texture" id=2]
-[ext_resource path="res://sounds/Bleetz.wav" type="Sample" id=3]
+[ext_resource path="res://sounds/Bleetz.wav" type="Sample" id=2]
+[ext_resource path="res://graphics/player/LD_39_Dog_walk_spritesheet.png" type="Texture" id=3]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 
 custom_solver_bias = 0.0
-points = Vector2Array( 8.53326, 15.5216, -8.90076, 15.5216, -9.09448, -15.666, 8.53326, -15.666 )
+points = Vector2Array( 56, -12, 60, 0, 60, 32, -60, 32, 20, 0 )
 
-[sub_resource type="SampleLibrary" id=2]
+[sub_resource type="ConvexPolygonShape2D" id=2]
+
+custom_solver_bias = 0.0
+points = Vector2Array( -52, 16, -52, 8, -44, 8, -44, 16 )
+
+[sub_resource type="ConvexPolygonShape2D" id=3]
+
+custom_solver_bias = 0.0
+points = Vector2Array( -64, 16, -60, 12, -52, 16, -60, 32 )
+
+[sub_resource type="ConvexPolygonShape2D" id=4]
+
+custom_solver_bias = 0.0
+points = Vector2Array( -60, 32, -52, 16, -44, 16 )
+
+[sub_resource type="ConvexPolygonShape2D" id=5]
+
+custom_solver_bias = 0.0
+points = Vector2Array( -60, 32, -44, 16, -40, 16 )
+
+[sub_resource type="ConvexPolygonShape2D" id=6]
+
+custom_solver_bias = 0.0
+points = Vector2Array( 20, 0, 24, -12, 36, -20, 44, -20, 56, -12 )
+
+[sub_resource type="ConvexPolygonShape2D" id=7]
+
+custom_solver_bias = 0.0
+points = Vector2Array( 20, 0, -60, 32, -40, 16 )
+
+[sub_resource type="SampleLibrary" id=8]
 
 samples/Bleetz = {
 "db": -5.49,
 "pitch": 1.0,
 "priority": 0,
-"sample": ExtResource( 3 )
+"sample": ExtResource( 2 )
+}
+
+[sub_resource type="Animation" id=9]
+
+resource/name = "Walk"
+length = 1.0
+loop = true
+step = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:texture")
+tracks/0/interp = 1
+tracks/0/imported = false
+tracks/0/keys = {
+"times": FloatArray( 0 ),
+"transitions": FloatArray( 1 ),
+"update": 1,
+"values": [ ExtResource( 3 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:frame")
+tracks/1/interp = 0
+tracks/1/imported = false
+tracks/1/keys = {
+"times": FloatArray( 0, 0.5 ),
+"transitions": FloatArray( 1, 1 ),
+"update": 0,
+"values": [ 0, 1 ]
 }
 
 [node name="Animals" type="KinematicBody2D"]
@@ -24,6 +81,24 @@ input/pickable = false
 shapes/0/shape = SubResource( 1 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 0, 0 )
 shapes/0/trigger = false
+shapes/1/shape = SubResource( 2 )
+shapes/1/transform = Matrix32( 1, 0, 0, 1, 0, 0 )
+shapes/1/trigger = false
+shapes/2/shape = SubResource( 3 )
+shapes/2/transform = Matrix32( 1, 0, 0, 1, 0, 0 )
+shapes/2/trigger = false
+shapes/3/shape = SubResource( 4 )
+shapes/3/transform = Matrix32( 1, 0, 0, 1, 0, 0 )
+shapes/3/trigger = false
+shapes/4/shape = SubResource( 5 )
+shapes/4/transform = Matrix32( 1, 0, 0, 1, 0, 0 )
+shapes/4/trigger = false
+shapes/5/shape = SubResource( 6 )
+shapes/5/transform = Matrix32( 1, 0, 0, 1, 0, 0 )
+shapes/5/trigger = false
+shapes/6/shape = SubResource( 7 )
+shapes/6/transform = Matrix32( 1, 0, 0, 1, 0, 0 )
+shapes/6/trigger = false
 collision/layers = 1
 collision/mask = 1
 collision/margin = 0.08
@@ -37,15 +112,11 @@ mPowerIncrement = 1.0
 mPowerDecrement = 10.0
 mFriction = 1.0
 
-[node name="Sprite" type="Sprite" parent="."]
-
-texture = ExtResource( 2 )
-
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 
 build_mode = 0
-polygon = Vector2Array( 8.53326, -15.666, -9.09448, -15.666, -8.90076, 15.5216, 8.53326, 15.5216 )
-shape_range = Vector2( 0, 0 )
+polygon = Vector2Array( 60, 32, -60, 32, -64, 16, -60, 12, -52, 16, -52, 8, -44, 8, -44, 16, -40, 16, 20, 0, 24, -12, 36, -20, 44, -20, 56, -12, 60, 0 )
+shape_range = Vector2( 0, 6 )
 trigger = false
 
 [node name="ShockTimer" type="Timer" parent="."]
@@ -125,7 +196,7 @@ params/attenuation/min_distance = 1.0
 params/attenuation/max_distance = 2048.0
 params/attenuation/distance_exp = 1.0
 config/polyphony = 1
-config/samples = SubResource( 2 )
+config/samples = SubResource( 8 )
 config/pitch_random = 0.0
 
 [node name="PowerTimer" type="Timer" parent="."]
@@ -134,6 +205,24 @@ process_mode = 1
 wait_time = 0.25
 one_shot = false
 autostart = true
+
+[node name="Sprite" type="Sprite" parent="."]
+
+texture = ExtResource( 3 )
+vframes = 2
+hframes = 2
+region_rect = Rect2( 0, 0, 128, 128 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite"]
+
+playback/process_mode = 1
+playback/default_blend_time = 0.0
+root/root = NodePath("..")
+anims/Walk = SubResource( 9 )
+playback/active = true
+playback/speed = 1.0
+blend_times = [  ]
+autoplay = ""
 
 [connection signal="timeout" from="ShockTimer" to="." method="_on_ShockTimer_timeout"]
 
